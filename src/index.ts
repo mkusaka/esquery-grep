@@ -7,5 +7,5 @@ export const grep = (content: string, query: string) => {
   });
 
   // @ts-ignore
-  console.log(esquery(ast, query))
+  return esquery(ast, query)
 }

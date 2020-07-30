@@ -15,9 +15,7 @@
     "typescript": "^3.9.7"
   },
   "dependencies": {
-    "@typescript-eslint/parser": "^3.7.1",
     "acorn": "^7.3.1",
-    "eslint": "^7.5.0",
     "esquery": "^1.3.1",
     "fast-glob": "^3.2.4"
   },
@@ -25,5 +23,11 @@
     "build": "tsc -p .",
     "clean": "rm -rf dist",
     "watch": "yarn build --watch"
-  }
+  },
+  "files": [
+    "dist/index.js",
+    "dist/cli.js",
+    "bin/eg",
+    "LICENSE"
+  ]
 }

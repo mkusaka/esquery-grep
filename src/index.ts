@@ -4,8 +4,9 @@ import esquery from "esquery";
 export const grep = (content: string, query: string) => {
   const ast = parse(content, {
     ecmaVersion: 2020,
+    sourceType: "module",
   });
 
   // @ts-ignore
-  console.log(esquery(ast, query))
+  return esquery(ast, query)
 }

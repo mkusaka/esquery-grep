@@ -1,6 +1,6 @@
 {
   "name": "esquery-grep",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "main": "index.js",
   "bin": {
     "esquery-grep": "bin/eg"
@@ -23,5 +23,11 @@
     "build": "tsc -p .",
     "clean": "rm -rf dist",
     "watch": "yarn build --watch"
-  }
+  },
+  "files": [
+    "dist/index.js",
+    "dist/cli.js",
+    "bin/eg",
+    "LICENSE"
+  ]
 }

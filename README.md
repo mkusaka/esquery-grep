@@ -2,10 +2,10 @@
 
 grep js file with equery
 
-# install 
+# install
 
 ```
-npm i -g esquery-grep # not yet
+npm i -g esquery-grep
 ```
 
 # usage

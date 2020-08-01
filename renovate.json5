@@ -1,8 +1,5 @@
 {
-  extends: [
-    "config:base",
-    "group:recommended"
-  ],
+  extends: ["config:base", "group:recommended"],
   rangeStrategy: "bump",
   prConcurrentLimit: 0,
   prHourlyLimit: 0,

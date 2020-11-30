@@ -13,3 +13,8 @@ npm i -g esquery-grep
 ```
 esquery-grep "example/*.js" "VariableDeclaration"
 ```
+or
+
+```
+npx esquery-grep "example/*.js" "VariableDeclaration"
+```

@@ -60,18 +60,18 @@
     "@nodelib/fs.scandir" "2.1.3"
     fastq "^1.6.0"
 
-"@types/eslint@^7.2.4":
-  version "7.2.4"
-  resolved "https://registry.yarnpkg.com/@types/eslint/-/eslint-7.2.4.tgz#d12eeed7741d2491b69808576ac2d20c14f74c41"
-  integrity sha512-YCY4kzHMsHoyKspQH+nwSe+70Kep7Vjt2X+dZe5Vs2vkRudqtoFoUIv1RlJmZB8Hbp7McneupoZij4PadxsK5Q==
+"@types/eslint@^7.29.0":
+  version "7.29.0"
+  resolved "https://registry.yarnpkg.com/@types/eslint/-/eslint-7.29.0.tgz#e56ddc8e542815272720bb0b4ccc2aff9c3e1c78"
+  integrity sha512-VNcvioYDH8/FxaeTKkM4/TiTwt6pBV9E3OfGmvaw8tPl0rrHCJ4Ll15HRT+pMiFAf/MLQvAzC+6RzUMEL9Ceng==
   dependencies:
     "@types/estree" "*"
     "@types/json-schema" "*"
 
-"@types/esquery@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@types/esquery/-/esquery-1.0.1.tgz#687eba6440fda7d00fc81a91fe7d737b06c4c2f6"
-  integrity sha512-6u3GyW2v1rJ+euHNxtI1p2pg1dU49xflCp7DupiLYH7jlVEqK9Hc754jnqybwXtDC/kN8qYneRWJx+6PBaujeQ==
+"@types/esquery@^1.5.3":
+  version "1.5.3"
+  resolved "https://registry.yarnpkg.com/@types/esquery/-/esquery-1.5.3.tgz#59fce2cdf351151bf5fe507cf78dc40c0f0af9b8"
+  integrity sha512-c55hQOcoPkWDfuEN9EdP1YyNH4D909U40gUEpY0nB5PWHExWHEPxcx3sx0fJ1Gzf4j1OpWktmIgciIlpgHtfDg==
   dependencies:
     "@types/estree" "*"
 
@@ -85,10 +85,10 @@
   resolved "https://registry.yarnpkg.com/@types/json-schema/-/json-schema-7.0.6.tgz#f4c7ec43e81b319a9815115031709f26987891f0"
   integrity sha512-3c+yGKvVP5Y9TYBEibGNR+kLtijnj7mYrXRg+WpFb2X9xm04g/DXYkfg4hmzJQosc9snFNUPkbYIhu+KAm6jJw==
 
-"@types/node@^14.14.6":
-  version "14.14.6"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.6.tgz#146d3da57b3c636cc0d1769396ce1cfa8991147f"
-  integrity sha512-6QlRuqsQ/Ox/aJEQWBEJG7A9+u7oSYl3mem/K8IzxXG/kAGbV1YPD9Bg9Zw3vyxC/YP+zONKwy8hGkSt1jxFMw==
+"@types/node@^14.18.63":
+  version "14.18.63"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.18.63.tgz#1788fa8da838dbb5f9ea994b834278205db6ca2b"
+  integrity sha512-fAtCfv4jJg+ExtXhvCkCqUKZ+4ok/JQk01qDKhL5BDDoS3AxKXhV5/MAVUZyQnSEd2GT92fkgZl0pz0Q0AzcIQ==
 
 "@typescript-eslint/experimental-utils@^4.6.1":
   version "4.6.1"

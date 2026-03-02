@@ -1,0 +1,9 @@
+[package]
+name = "esquery-selector"
+version = "0.1.0"
+edition = "2021"
+description = "ESQuery selector parser for JavaScript/TypeScript AST querying"
+license = "MIT"
+
+[dependencies]
+winnow = "0.7"

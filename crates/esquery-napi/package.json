@@ -1,0 +1,17 @@
+{
+  "name": "esquery-oxc",
+  "version": "0.1.0",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "napi": {
+    "binaryName": "esquery-oxc",
+    "targets": []
+  },
+  "scripts": {
+    "build": "napi build --manifest-path ./Cargo.toml --platform --release",
+    "build:debug": "napi build --manifest-path ./Cargo.toml --platform"
+  },
+  "devDependencies": {
+    "@napi-rs/cli": "^3"
+  }
+}

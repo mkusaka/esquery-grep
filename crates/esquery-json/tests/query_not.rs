@@ -46,10 +46,13 @@ fn not_small_program() {
         }]
     });
     let matches = query(&program, ":not([value=1])");
-    assert_includes(&matches, &[
-        &program,
-        nav(&program, "body.0"),
-        nav(&program, "body.0.declarations.0"),
-        nav(&program, "body.0.declarations.0.id"),
-    ]);
+    assert_includes(
+        &matches,
+        &[
+            &program,
+            nav(&program, "body.0"),
+            nav(&program, "body.0.declarations.0"),
+            nav(&program, "body.0.declarations.0.id"),
+        ],
+    );
 }

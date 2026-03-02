@@ -2,14 +2,21 @@ use serde_json::Value;
 
 /// Load a JSON AST fixture by name.
 pub fn load(name: &str) -> Value {
-    let path = format!("{}/tests/fixtures/{}.json", env!("CARGO_MANIFEST_DIR"), name);
-    let data = std::fs::read_to_string(&path).unwrap_or_else(|e| panic!("Failed to load fixture {}: {}", name, e));
-    serde_json::from_str(&data).unwrap_or_else(|e| panic!("Failed to parse fixture {}: {}", name, e))
+    let path = format!(
+        "{}/tests/fixtures/{}.json",
+        env!("CARGO_MANIFEST_DIR"),
+        name
+    );
+    let data = std::fs::read_to_string(&path)
+        .unwrap_or_else(|e| panic!("Failed to load fixture {}: {}", name, e));
+    serde_json::from_str(&data)
+        .unwrap_or_else(|e| panic!("Failed to parse fixture {}: {}", name, e))
 }
 
 /// Navigate a JSON value by a dot-separated path.
 /// Numeric segments are treated as array indices.
 /// Example: "body.0.test.left"
+#[allow(dead_code)]
 pub fn nav<'a>(root: &'a Value, path: &str) -> &'a Value {
     let mut current = root;
     for segment in path.split('.') {

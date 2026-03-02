@@ -53,11 +53,14 @@ fn wildcard_small_program() {
         }]
     });
     let matches = query(&program, "*");
-    assert_includes(&matches, &[
-        &program,
-        nav(&program, "body.0"),
-        nav(&program, "body.0.declarations.0"),
-        nav(&program, "body.0.declarations.0.id"),
-        nav(&program, "body.0.declarations.0.init"),
-    ]);
+    assert_includes(
+        &matches,
+        &[
+            &program,
+            nav(&program, "body.0"),
+            nav(&program, "body.0.declarations.0"),
+            nav(&program, "body.0.declarations.0.id"),
+            nav(&program, "body.0.declarations.0.init"),
+        ],
+    );
 }

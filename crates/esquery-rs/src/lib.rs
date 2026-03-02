@@ -142,7 +142,11 @@ mod tests {
     fn literal_query() {
         let source = "var x = 42;";
         let results = query(source, "Literal", JsSourceType::Js);
-        assert!(!results.is_empty(), "should find literal, got: {:?}", results);
+        assert!(
+            !results.is_empty(),
+            "should find literal, got: {:?}",
+            results
+        );
         assert!(
             results.iter().any(|r| r.text == "42"),
             "should find literal '42', got: {:?}",
@@ -174,7 +178,11 @@ mod tests {
     #[test]
     fn attribute_selector() {
         let source = "var x = 1 + 2;";
-        let results = query(source, r#"BinaryExpression[operator="+"]"#, JsSourceType::Js);
+        let results = query(
+            source,
+            r#"BinaryExpression[operator="+"]"#,
+            JsSourceType::Js,
+        );
         assert_eq!(results.len(), 1, "should find binary expression with +");
         assert_eq!(results[0].text, "1 + 2");
     }
@@ -237,7 +245,11 @@ mod tests {
             "FunctionDeclaration > BlockStatement",
             JsSourceType::Js,
         );
-        assert_eq!(results.len(), 1, "should find exactly one direct child block");
+        assert_eq!(
+            results.len(),
+            1,
+            "should find exactly one direct child block"
+        );
         assert_eq!(results[0].node_type, "BlockStatement");
     }
 

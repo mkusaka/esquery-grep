@@ -7,11 +7,14 @@ use esquery_json::query;
 fn descendant_conditional() {
     let ast = load("conditional");
     let matches = query(&ast, "Program IfStatement");
-    assert_includes(&matches, &[
-        nav(&ast, "body.0"),
-        nav(&ast, "body.1"),
-        nav(&ast, "body.1.alternate"),
-    ]);
+    assert_includes(
+        &matches,
+        &[
+            nav(&ast, "body.0"),
+            nav(&ast, "body.1"),
+            nav(&ast, "body.1.alternate"),
+        ],
+    );
 }
 
 #[test]

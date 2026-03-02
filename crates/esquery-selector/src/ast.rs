@@ -1,5 +1,5 @@
-/// ESQuery selector AST types.
-/// Mirrors the structure produced by the esquery PEG parser.
+//! ESQuery selector AST types.
+//! Mirrors the structure produced by the esquery PEG parser.
 
 /// Selector node with optional subject flag (`!` prefix).
 #[derive(Debug, Clone, PartialEq)]
@@ -10,7 +10,10 @@ pub struct Selector {
 
 impl Selector {
     pub fn new(kind: SelectorKind) -> Self {
-        Self { kind, subject: false }
+        Self {
+            kind,
+            subject: false,
+        }
     }
 }
 
@@ -19,7 +22,9 @@ pub enum SelectorKind {
     Wildcard,
     Identifier(String),
     ExactNode,
-    Field { name: String },
+    Field {
+        name: String,
+    },
     Attribute(AttributeSelector),
     /// Class pseudo-selector (`:statement`, `:expression`, etc.).
     /// Name is stored as-is; validation happens at match time.
@@ -28,12 +33,28 @@ pub enum SelectorKind {
     Matches(Vec<Selector>),
     Not(Vec<Selector>),
     Has(Vec<Selector>),
-    NthChild { index: i32 },
-    NthLastChild { index: i32 },
-    Child { left: Box<Selector>, right: Box<Selector> },
-    Descendant { left: Box<Selector>, right: Box<Selector> },
-    Sibling { left: Box<Selector>, right: Box<Selector> },
-    Adjacent { left: Box<Selector>, right: Box<Selector> },
+    NthChild {
+        index: i32,
+    },
+    NthLastChild {
+        index: i32,
+    },
+    Child {
+        left: Box<Selector>,
+        right: Box<Selector>,
+    },
+    Descendant {
+        left: Box<Selector>,
+        right: Box<Selector>,
+    },
+    Sibling {
+        left: Box<Selector>,
+        right: Box<Selector>,
+    },
+    Adjacent {
+        left: Box<Selector>,
+        right: Box<Selector>,
+    },
 }
 
 #[derive(Debug, Clone, PartialEq)]

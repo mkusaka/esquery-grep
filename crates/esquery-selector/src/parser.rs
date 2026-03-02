@@ -17,9 +17,9 @@ pub fn parse(input: &str) -> Option<Selector> {
 /// start = _ ss:selectors _ { ss.length === 1 ? ss[0] : { type: 'matches', selectors: ss } }
 ///       / _ { return void 0; }
 fn start(input: &mut &str) -> ModalResult<Option<Selector>> {
-    let _ = sp(input)?;
+    sp(input)?;
     let result = opt(selectors).parse_next(input)?;
-    let _ = sp(input)?;
+    sp(input)?;
     Ok(match result {
         None => None,
         Some(mut ss) if ss.len() == 1 => Some(ss.remove(0)),
@@ -37,8 +37,7 @@ fn identifier_name(input: &mut &str) -> ModalResult<String> {
     take_while(1.., |c: char| {
         !matches!(
             c,
-            ' ' | '[' | ']' | ',' | '(' | ')' | ':' | '#' | '!' | '=' | '>' | '<' | '~' | '+'
-                | '.'
+            ' ' | '[' | ']' | ',' | '(' | ')' | ':' | '#' | '!' | '=' | '>' | '<' | '~' | '+' | '.'
         )
     })
     .map(|s: &str| s.to_string())
@@ -107,9 +106,9 @@ fn has_selector(input: &mut &str) -> ModalResult<Selector> {
 fn selector(input: &mut &str) -> ModalResult<Selector> {
     let first = sequence(input)?;
     let rest: Vec<(BinOp, Selector)> = repeat(0.., (binary_op, sequence)).parse_next(input)?;
-    Ok(rest.into_iter().fold(first, |left, (op, right)| {
-        make_binary(op, left, right)
-    }))
+    Ok(rest
+        .into_iter()
+        .fold(first, |left, (op, right)| make_binary(op, left, right)))
 }
 
 /// sequence = "!"? atom+
@@ -202,7 +201,11 @@ fn attr_name(input: &mut &str) -> ModalResult<String> {
 
 /// attrEqOps = "!"? "=" → "=" | "!="
 fn attr_eq_ops(input: &mut &str) -> ModalResult<AttrOperator> {
-    alt(("!=".map(|_| AttrOperator::NotEq), "=".map(|_| AttrOperator::Eq))).parse_next(input)
+    alt((
+        "!=".map(|_| AttrOperator::NotEq),
+        "=".map(|_| AttrOperator::Eq),
+    ))
+    .parse_next(input)
 }
 
 /// attrOps = [><!]? "=" / [><]
@@ -221,13 +224,18 @@ fn attr_ops(input: &mut &str) -> ModalResult<AttrOperator> {
 /// attrValue = name attrEqOps (type/regex) / name attrOps (string/number/path) / name
 fn attr_value(input: &mut &str) -> ModalResult<AttributeSelector> {
     alt((
-        (attr_name, sp, attr_eq_ops, sp, alt((type_value, regex_value))).map(
-            |(name, _, op, _, value)| AttributeSelector {
+        (
+            attr_name,
+            sp,
+            attr_eq_ops,
+            sp,
+            alt((type_value, regex_value)),
+        )
+            .map(|(name, _, op, _, value)| AttributeSelector {
                 name,
                 operator: Some(op),
                 value: Some(value),
-            },
-        ),
+            }),
         (
             attr_name,
             sp,
@@ -256,9 +264,7 @@ fn string_value(input: &mut &str) -> ModalResult<AttrValue> {
     alt((quoted_string('"'), quoted_string('\''))).parse_next(input)
 }
 
-fn quoted_string<'a>(
-    quote: char,
-) -> impl FnMut(&mut &'a str) -> ModalResult<AttrValue> {
+fn quoted_string<'a>(quote: char) -> impl FnMut(&mut &'a str) -> ModalResult<AttrValue> {
     move |input: &mut &'a str| -> ModalResult<AttrValue> {
         let mut q = if quote == '"' { "\"" } else { "'" };
         let _ = q.parse_next(input)?;
@@ -320,8 +326,10 @@ fn regex_value(input: &mut &str) -> ModalResult<AttrValue> {
     let parts: Vec<String> =
         repeat(1.., alt((re_character_class, re_escape, re_chars))).parse_next(input)?;
     let _ = "/".parse_next(input)?;
-    let flags: Option<&str> = opt(take_while(1.., |c: char| matches!(c, 'i' | 'm' | 's' | 'u')))
-        .parse_next(input)?;
+    let flags: Option<&str> = opt(take_while(1.., |c: char| {
+        matches!(c, 'i' | 'm' | 's' | 'u')
+    }))
+    .parse_next(input)?;
     let flags_str = flags.unwrap_or("");
     // Reject duplicate flags (JS throws "Invalid flags supplied to RegExp constructor")
     let mut seen = [false; 4]; // i, m, s, u
@@ -336,7 +344,9 @@ fn regex_value(input: &mut &str) -> ModalResult<AttrValue> {
         if seen[idx] {
             // Cut (not Backtrack): we've committed to regex parsing after /pattern/flags,
             // so duplicate flags must not fall back to the path_value branch.
-            return Err(winnow::error::ErrMode::Cut(winnow::error::ContextError::new()));
+            return Err(winnow::error::ErrMode::Cut(
+                winnow::error::ContextError::new(),
+            ));
         }
         seen[idx] = true;
     }
@@ -351,8 +361,7 @@ fn re_character_class(input: &mut &str) -> ModalResult<String> {
     let parts: Vec<String> = repeat(
         1..,
         alt((
-            take_while(1.., |c: char| c != ']' && c != '\\')
-                .map(|s: &str| s.to_string()),
+            take_while(1.., |c: char| c != ']' && c != '\\').map(|s: &str| s.to_string()),
             re_escape,
         )),
     )
@@ -419,7 +428,10 @@ fn nth_child(input: &mut &str) -> ModalResult<Selector> {
         delimited(sp, take_while(1.., |c: char| c.is_ascii_digit()), sp),
         ")",
     )
-    .try_map(|n: &str| n.parse::<i32>().map(|index| Selector::new(SelectorKind::NthChild { index })))
+    .try_map(|n: &str| {
+        n.parse::<i32>()
+            .map(|index| Selector::new(SelectorKind::NthChild { index }))
+    })
     .parse_next(input)
 }
 
@@ -429,7 +441,10 @@ fn nth_last_child(input: &mut &str) -> ModalResult<Selector> {
         delimited(sp, take_while(1.., |c: char| c.is_ascii_digit()), sp),
         ")",
     )
-    .try_map(|n: &str| n.parse::<i32>().map(|index| Selector::new(SelectorKind::NthLastChild { index })))
+    .try_map(|n: &str| {
+        n.parse::<i32>()
+            .map(|index| Selector::new(SelectorKind::NthLastChild { index }))
+    })
     .parse_next(input)
 }
 
@@ -549,7 +564,10 @@ mod tests {
             SelectorKind::Attribute(a) => {
                 assert_eq!(a.name, "name");
                 assert_eq!(a.operator, Some(AttrOperator::Eq));
-                assert_eq!(a.value, Some(AttrValue::Literal(AttrLiteral::String("foo".into()))));
+                assert_eq!(
+                    a.value,
+                    Some(AttrValue::Literal(AttrLiteral::String("foo".into())))
+                );
             }
             _ => panic!("expected Attribute"),
         }
@@ -561,7 +579,10 @@ mod tests {
         match &s.kind {
             SelectorKind::Attribute(a) => {
                 assert_eq!(a.operator, Some(AttrOperator::Eq));
-                assert_eq!(a.value, Some(AttrValue::Literal(AttrLiteral::Number(21.35))));
+                assert_eq!(
+                    a.value,
+                    Some(AttrValue::Literal(AttrLiteral::Number(21.35)))
+                );
             }
             _ => panic!("expected Attribute"),
         }
@@ -588,7 +609,12 @@ mod tests {
     #[test]
     fn field_selector() {
         let s = parse(".test").unwrap();
-        assert_eq!(s.kind, SelectorKind::Field { name: "test".into() });
+        assert_eq!(
+            s.kind,
+            SelectorKind::Field {
+                name: "test".into()
+            }
+        );
     }
 
     #[test]
@@ -768,7 +794,10 @@ mod tests {
         match &s.kind {
             SelectorKind::Attribute(a) => {
                 assert_eq!(a.name, "value");
-                assert_eq!(a.value, Some(AttrValue::Literal(AttrLiteral::Number(21.35))));
+                assert_eq!(
+                    a.value,
+                    Some(AttrValue::Literal(AttrLiteral::Number(21.35)))
+                );
             }
             _ => panic!("expected Attribute"),
         }
@@ -809,7 +838,10 @@ mod tests {
         let s = parse("[name='foo']").unwrap();
         match &s.kind {
             SelectorKind::Attribute(a) => {
-                assert_eq!(a.value, Some(AttrValue::Literal(AttrLiteral::String("foo".into()))));
+                assert_eq!(
+                    a.value,
+                    Some(AttrValue::Literal(AttrLiteral::String("foo".into())))
+                );
             }
             _ => panic!("expected Attribute"),
         }
@@ -844,15 +876,13 @@ mod tests {
     fn regex_with_character_class() {
         let s = parse("[name=/[a-z]+/]").unwrap();
         match &s.kind {
-            SelectorKind::Attribute(a) => {
-                match &a.value {
-                    Some(AttrValue::Regex(r)) => {
-                        assert_eq!(r.pattern, "[a-z]+");
-                        assert_eq!(r.flags, "");
-                    }
-                    _ => panic!("expected regex value"),
+            SelectorKind::Attribute(a) => match &a.value {
+                Some(AttrValue::Regex(r)) => {
+                    assert_eq!(r.pattern, "[a-z]+");
+                    assert_eq!(r.flags, "");
                 }
-            }
+                _ => panic!("expected regex value"),
+            },
             _ => panic!("expected Attribute"),
         }
     }
@@ -906,7 +936,10 @@ mod tests {
         let s = parse("[prefix=true]").unwrap();
         match &s.kind {
             SelectorKind::Attribute(a) => {
-                assert_eq!(a.value, Some(AttrValue::Literal(AttrLiteral::Path("true".into()))));
+                assert_eq!(
+                    a.value,
+                    Some(AttrValue::Literal(AttrLiteral::Path("true".into())))
+                );
             }
             _ => panic!("expected Attribute"),
         }
@@ -985,7 +1018,10 @@ mod tests {
             SelectorKind::Child { left, right } => {
                 assert_eq!(right.kind, SelectorKind::Identifier("Identifier".into()));
                 match &left.kind {
-                    SelectorKind::Child { left: ll, right: lr } => {
+                    SelectorKind::Child {
+                        left: ll,
+                        right: lr,
+                    } => {
                         assert_eq!(ll.kind, SelectorKind::Identifier("IfStatement".into()));
                         assert_eq!(lr.kind, SelectorKind::Identifier("BinaryExpression".into()));
                     }
@@ -1022,7 +1058,12 @@ mod tests {
     fn subject_on_field() {
         let s = parse("!.test").unwrap();
         assert!(s.subject);
-        assert_eq!(s.kind, SelectorKind::Field { name: "test".into() });
+        assert_eq!(
+            s.kind,
+            SelectorKind::Field {
+                name: "test".into()
+            }
+        );
     }
 
     #[test]
@@ -1052,7 +1093,8 @@ mod tests {
 
     #[test]
     fn chained_has() {
-        let s = parse("BinaryExpression:has(Identifier[name=\"x\"]):has(Literal[value=\"test\"])").unwrap();
+        let s = parse("BinaryExpression:has(Identifier[name=\"x\"]):has(Literal[value=\"test\"])")
+            .unwrap();
         match &s.kind {
             SelectorKind::Compound(atoms) => {
                 assert_eq!(atoms.len(), 3); // BinaryExpression, :has(...), :has(...)
@@ -1063,7 +1105,8 @@ mod tests {
 
     #[test]
     fn nested_has() {
-        let s = parse("Program:has(IfStatement:has(Literal[value=true], Literal[value=false]))").unwrap();
+        let s = parse("Program:has(IfStatement:has(Literal[value=true], Literal[value=false]))")
+            .unwrap();
         assert!(s.kind != SelectorKind::Wildcard); // Just verify it parses
     }
 
@@ -1169,17 +1212,15 @@ mod tests {
     fn non_standard_escape() {
         let s = parse(r#"Literal[value="\z"]"#).unwrap();
         match &s.kind {
-            SelectorKind::Compound(atoms) => {
-                match &atoms[1].kind {
-                    SelectorKind::Attribute(a) => {
-                        assert_eq!(
-                            a.value,
-                            Some(AttrValue::Literal(AttrLiteral::String("z".into())))
-                        );
-                    }
-                    _ => panic!("expected Attribute"),
+            SelectorKind::Compound(atoms) => match &atoms[1].kind {
+                SelectorKind::Attribute(a) => {
+                    assert_eq!(
+                        a.value,
+                        Some(AttrValue::Literal(AttrLiteral::String("z".into())))
+                    );
                 }
-            }
+                _ => panic!("expected Attribute"),
+            },
             _ => panic!("expected Compound"),
         }
     }
@@ -1302,11 +1343,7 @@ mod tests {
             ":pattern",
         ];
         for sel in &selectors {
-            assert!(
-                parse(sel).is_some(),
-                "Failed to parse selector: {:?}",
-                sel
-            );
+            assert!(parse(sel).is_some(), "Failed to parse selector: {:?}", sel);
         }
     }
 
@@ -1314,7 +1351,10 @@ mod tests {
     fn nth_child_overflow_does_not_panic() {
         // i32 overflow should return None (parse failure), not panic
         assert_eq!(parse(":nth-child(999999999999999999999999999999)"), None);
-        assert_eq!(parse(":nth-last-child(999999999999999999999999999999)"), None);
+        assert_eq!(
+            parse(":nth-last-child(999999999999999999999999999999)"),
+            None
+        );
     }
 
     #[test]

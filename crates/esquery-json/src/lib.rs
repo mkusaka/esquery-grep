@@ -1,6 +1,6 @@
 mod matcher;
 
-use esquery_selector::{self as sel, AttrValue, SelectorKind, Selector};
+use esquery_selector::{self as sel, AttrValue, Selector, SelectorKind};
 use serde_json::Value;
 
 /// Query a JSON ESTree AST with an ESQuery selector string.
@@ -127,23 +127,24 @@ fn traverse_and_match<'a>(
 pub fn is_node(val: &Value) -> bool {
     val.as_object()
         .and_then(|obj| obj.get("type"))
-        .map_or(false, |t| t.is_string())
+        .is_some_and(|t| t.is_string())
 }
 
 /// Get visitor keys for a node.
 /// Uses estraverse.VisitorKeys for known ESTree node types.
 /// Falls back to all keys except "type" for unknown node types (iteration fallback).
 fn visitor_keys(node: &Value) -> Vec<&str> {
-    let node_type = node
-        .get("type")
-        .and_then(|t| t.as_str())
-        .unwrap_or("");
+    let node_type = node.get("type").and_then(|t| t.as_str()).unwrap_or("");
     if let Some(keys) = estraverse_visitor_keys(node_type) {
         return keys.to_vec();
     }
     // Iteration fallback for unknown node types
     match node.as_object() {
-        Some(obj) => obj.keys().filter(|k| k.as_str() != "type").map(|k| k.as_str()).collect(),
+        Some(obj) => obj
+            .keys()
+            .filter(|k| k.as_str() != "type")
+            .map(|k| k.as_str())
+            .collect(),
         None => vec![],
     }
 }

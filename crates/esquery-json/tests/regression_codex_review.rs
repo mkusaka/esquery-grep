@@ -1,6 +1,5 @@
 /// Regression tests for issues found by Codex CLI review.
 /// Each test reproduces a specific JS/Rust behavior mismatch.
-
 use esquery_json::query;
 use serde_json::json;
 
@@ -53,7 +52,11 @@ fn regex_multiline_flag() {
         "raw": "\"foo\\nbar\""
     });
     let matches = query(&ast, "[value=/^bar/m]");
-    assert_eq!(matches.len(), 1, "multiline flag should make ^ match after newline");
+    assert_eq!(
+        matches.len(),
+        1,
+        "multiline flag should make ^ match after newline"
+    );
 }
 
 #[test]
@@ -65,7 +68,11 @@ fn regex_without_dotall_should_not_match_newline() {
         "raw": "\"foo\\nbar\""
     });
     let matches = query(&ast, "[value=/foo.bar/]");
-    assert_eq!(matches.len(), 0, "without dotall, . should not match newline");
+    assert_eq!(
+        matches.len(),
+        0,
+        "without dotall, . should not match newline"
+    );
 }
 
 // -- Fix 3: get_path null vs undefined (null mid-path) --
@@ -142,11 +149,7 @@ fn neq_regex_number_value_matching_pattern() {
         "raw": "123"
     });
     let matches = query(&ast, r"[value!=/\d+/]");
-    assert_eq!(
-        matches.len(),
-        0,
-        "!= regex: '123' matches /\\d+/ → false"
-    );
+    assert_eq!(matches.len(), 0, "!= regex: '123' matches /\\d+/ → false");
 }
 
 #[test]
@@ -236,7 +239,11 @@ fn compare_string_value_gt_number_literal() {
         "raw": "\"2\""
     });
     let matches = query(&ast, "[value>1]");
-    assert_eq!(matches.len(), 1, "string '2' > 1 should be true (JS coercion)");
+    assert_eq!(
+        matches.len(),
+        1,
+        "string '2' > 1 should be true (JS coercion)"
+    );
 }
 
 #[test]
@@ -248,7 +255,11 @@ fn compare_bool_value_gt_zero() {
         "raw": "true"
     });
     let matches = query(&ast, "[value>0]");
-    assert_eq!(matches.len(), 1, "true > 0 should be true (JS coercion: true=1)");
+    assert_eq!(
+        matches.len(),
+        1,
+        "true > 0 should be true (JS coercion: true=1)"
+    );
 }
 
 #[test]
@@ -260,7 +271,11 @@ fn compare_null_value_gte_zero() {
         "raw": "null"
     });
     let matches = query(&ast, "[value>=0]");
-    assert_eq!(matches.len(), 1, "null >= 0 should be true (JS coercion: null=0)");
+    assert_eq!(
+        matches.len(),
+        1,
+        "null >= 0 should be true (JS coercion: null=0)"
+    );
 }
 
 #[test]
@@ -272,7 +287,11 @@ fn compare_false_value_gte_zero() {
         "raw": "false"
     });
     let matches = query(&ast, "[value>=0]");
-    assert_eq!(matches.len(), 1, "false >= 0 should be true (JS coercion: false=0)");
+    assert_eq!(
+        matches.len(),
+        1,
+        "false >= 0 should be true (JS coercion: false=0)"
+    );
 }
 
 // -- Fix 7: JS Number() conversion for hex/binary strings and arrays --
@@ -285,7 +304,11 @@ fn compare_hex_string_gt_number() {
         "value": "0x10"
     });
     let matches = query(&ast, "[value>15]");
-    assert_eq!(matches.len(), 1, "hex string '0x10' (=16) > 15 should be true");
+    assert_eq!(
+        matches.len(),
+        1,
+        "hex string '0x10' (=16) > 15 should be true"
+    );
 }
 
 #[test]
@@ -296,7 +319,11 @@ fn compare_binary_string_gt_number() {
         "value": "0b10"
     });
     let matches = query(&ast, "[value>1]");
-    assert_eq!(matches.len(), 1, "binary string '0b10' (=2) > 1 should be true");
+    assert_eq!(
+        matches.len(),
+        1,
+        "binary string '0b10' (=2) > 1 should be true"
+    );
 }
 
 #[test]
@@ -343,7 +370,11 @@ fn compare_infinity_string_should_match() {
         "value": "Infinity"
     });
     let matches = query(&ast, "[value>1]");
-    assert_eq!(matches.len(), 1, "'Infinity' should be Infinity in JS Number()");
+    assert_eq!(
+        matches.len(),
+        1,
+        "'Infinity' should be Infinity in JS Number()"
+    );
 }
 
 // -- Fix 13: Array.toString() should treat null as empty string --
@@ -356,7 +387,11 @@ fn compare_null_array_gte_zero() {
         "value": [null]
     });
     let matches = query(&ast, "[value>=0]");
-    assert_eq!(matches.len(), 1, "[null] >= 0 should be true (Number([null])=0)");
+    assert_eq!(
+        matches.len(),
+        1,
+        "[null] >= 0 should be true (Number([null])=0)"
+    );
 }
 
 #[test]
@@ -367,7 +402,11 @@ fn compare_null_null_array_should_be_nan() {
         "value": [null, null]
     });
     let matches = query(&ast, "[value>=0]");
-    assert_eq!(matches.len(), 0, "[null,null] >= 0 should be false (Number(',')=NaN)");
+    assert_eq!(
+        matches.len(),
+        0,
+        "[null,null] >= 0 should be false (Number(',')=NaN)"
+    );
 }
 
 // -- Fix 14: regex lookbehind support (fancy-regex) --
@@ -414,7 +453,11 @@ fn comments_should_not_be_traversed() {
         !types.contains(&"Line"),
         "comments should not be traversed (not in visitor keys)"
     );
-    assert_eq!(types.len(), 3, "should find Program, ExpressionStatement, Literal");
+    assert_eq!(
+        types.len(),
+        3,
+        "should find Program, ExpressionStatement, Literal"
+    );
 }
 
 // -- Fix 16: unknown class name should cause parse failure --
@@ -440,7 +483,7 @@ fn known_class_still_works() {
         "sourceType": "script"
     });
     let matches = query(&ast, ":statement");
-    assert!(matches.len() > 0, ":statement should match statements");
+    assert!(!matches.is_empty(), ":statement should match statements");
 }
 
 // -- Fix 17: PropertyDefinition should not traverse decorators --
@@ -467,7 +510,7 @@ fn property_definition_decorators_not_traversed() {
         "sourceType": "script"
     });
     let matches = query(&ast, "*");
-    let types: Vec<&str> = matches
+    let _types: Vec<&str> = matches
         .iter()
         .map(|v| v.get("type").unwrap().as_str().unwrap())
         .collect();
@@ -476,7 +519,10 @@ fn property_definition_decorators_not_traversed() {
         .iter()
         .filter(|v| v.get("name").and_then(|n| n.as_str()) == Some("dec"))
         .count();
-    assert_eq!(decorator_count, 0, "decorators should not be traversed for PropertyDefinition");
+    assert_eq!(
+        decorator_count, 0,
+        "decorators should not be traversed for PropertyDefinition"
+    );
 }
 
 // -- Fix 18: invalid regex should cause parse/query failure --
@@ -498,7 +544,11 @@ fn invalid_regex_in_matches_returns_empty() {
         "sourceType": "script"
     });
     let matches = query(&ast, ":matches(Identifier, [name=/(/])");
-    assert_eq!(matches.len(), 0, "invalid regex in :matches should fail entire query");
+    assert_eq!(
+        matches.len(),
+        0,
+        "invalid regex in :matches should fail entire query"
+    );
 }
 
 #[test]
@@ -518,7 +568,11 @@ fn query_selector_rejects_invalid_regex() {
     let ast = json!({"type": "Identifier", "name": "x"});
     let selector = parse_selector(":matches(Identifier, [name=/(/])").unwrap();
     let matches = esquery_json::query_selector(&ast, &selector);
-    assert_eq!(matches.len(), 0, "query_selector should reject invalid regex");
+    assert_eq!(
+        matches.len(),
+        0,
+        "query_selector should reject invalid regex"
+    );
 }
 
 #[test]
@@ -538,5 +592,9 @@ fn duplicate_regex_flags_not_parsed_as_path() {
     // JS: [name=/x/ii] throws at parse time. Must NOT match anything.
     let ast = json!({"type": "Identifier", "name": "/x/ii"});
     let matches = query(&ast, "[name=/x/ii]");
-    assert_eq!(matches.len(), 0, "duplicate flags should cause parse failure, not path match");
+    assert_eq!(
+        matches.len(),
+        0,
+        "duplicate flags should cause parse failure, not path match"
+    );
 }

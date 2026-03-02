@@ -14,7 +14,7 @@ pub fn matches_node(node: &Value, selector: &Selector, ancestry: &[&Value]) -> b
             let name_lower = name.to_lowercase();
             node.get("type")
                 .and_then(|t| t.as_str())
-                .map_or(false, |t| t.to_lowercase() == name_lower)
+                .is_some_and(|t| t.to_lowercase() == name_lower)
         }
 
         SelectorKind::ExactNode => ancestry.is_empty(),
@@ -35,17 +35,11 @@ pub fn matches_node(node: &Value, selector: &Selector, ancestry: &[&Value]) -> b
 
         SelectorKind::Class(name) => match_class(node, name, ancestry),
 
-        SelectorKind::Compound(sels) => {
-            sels.iter().all(|s| matches_node(node, s, ancestry))
-        }
+        SelectorKind::Compound(sels) => sels.iter().all(|s| matches_node(node, s, ancestry)),
 
-        SelectorKind::Matches(sels) => {
-            sels.iter().any(|s| matches_node(node, s, ancestry))
-        }
+        SelectorKind::Matches(sels) => sels.iter().any(|s| matches_node(node, s, ancestry)),
 
-        SelectorKind::Not(sels) => {
-            !sels.iter().any(|s| matches_node(node, s, ancestry))
-        }
+        SelectorKind::Not(sels) => !sels.iter().any(|s| matches_node(node, s, ancestry)),
 
         SelectorKind::Has(sels) => has_match(node, sels),
 
@@ -76,8 +70,7 @@ pub fn matches_node(node: &Value, selector: &Selector, ancestry: &[&Value]) -> b
         }
 
         SelectorKind::Sibling { left, right } => {
-            (matches_node(node, right, ancestry)
-                && sibling_match(node, left, ancestry, Side::Left))
+            (matches_node(node, right, ancestry) && sibling_match(node, left, ancestry, Side::Left))
                 || (left.subject
                     && matches_node(node, left, ancestry)
                     && sibling_match(node, right, ancestry, Side::Right))
@@ -154,12 +147,8 @@ fn match_attribute(node: &Value, attr: &AttributeSelector) -> bool {
                         None => false,
                     }
                 }
-                (AttrOperator::Eq, AttrValue::Literal(lit)) => {
-                    literal_eq(val, lit)
-                }
-                (AttrOperator::NotEq, AttrValue::Literal(lit)) => {
-                    !literal_eq(val, lit)
-                }
+                (AttrOperator::Eq, AttrValue::Literal(lit)) => literal_eq(val, lit),
+                (AttrOperator::NotEq, AttrValue::Literal(lit)) => !literal_eq(val, lit),
                 (AttrOperator::Eq, AttrValue::Type(type_name)) => {
                     js_typeof(val) == type_name.as_str()
                 }
@@ -167,16 +156,16 @@ fn match_attribute(node: &Value, attr: &AttributeSelector) -> bool {
                     js_typeof(val) != type_name.as_str()
                 }
                 (AttrOperator::Lt, AttrValue::Literal(lit)) => {
-                    compare_js(val, lit).map_or(false, |ord| ord < 0.0)
+                    compare_js(val, lit).is_some_and(|ord| ord < 0.0)
                 }
                 (AttrOperator::Lte, AttrValue::Literal(lit)) => {
-                    compare_js(val, lit).map_or(false, |ord| ord <= 0.0)
+                    compare_js(val, lit).is_some_and(|ord| ord <= 0.0)
                 }
                 (AttrOperator::Gt, AttrValue::Literal(lit)) => {
-                    compare_js(val, lit).map_or(false, |ord| ord > 0.0)
+                    compare_js(val, lit).is_some_and(|ord| ord > 0.0)
                 }
                 (AttrOperator::Gte, AttrValue::Literal(lit)) => {
-                    compare_js(val, lit).map_or(false, |ord| ord >= 0.0)
+                    compare_js(val, lit).is_some_and(|ord| ord >= 0.0)
                 }
                 _ => false,
             }
@@ -191,7 +180,7 @@ fn match_attribute(node: &Value, attr: &AttributeSelector) -> bool {
 /// operates in Unicode mode. This means:
 /// - \u{61} is always a Unicode escape (JS only does this with /u)
 /// - . always matches a Unicode codepoint (JS matches UTF-16 code unit without /u)
-/// These are known limitations of using a Rust regex engine vs JS RegExp.
+///   These are known limitations of using a Rust regex engine vs JS RegExp.
 pub(crate) fn build_regex(re: &RegexValue) -> Option<Regex> {
     let mut flags = String::new();
     if re.flags.contains('i') {
@@ -244,7 +233,13 @@ fn value_to_string(val: &Value) -> String {
             // JS: null/undefined in arrays become empty strings: [null].toString() = ""
             if let Some(arr) = val.as_array() {
                 arr.iter()
-                    .map(|v| if v.is_null() { String::new() } else { value_to_string(v) })
+                    .map(|v| {
+                        if v.is_null() {
+                            String::new()
+                        } else {
+                            value_to_string(v)
+                        }
+                    })
                     .collect::<Vec<_>>()
                     .join(",")
             } else {
@@ -307,7 +302,9 @@ fn js_parse_number(s: &str) -> Option<f64> {
     }
     // Hex: 0x or 0X
     if trimmed.starts_with("0x") || trimmed.starts_with("0X") {
-        return u64::from_str_radix(&trimmed[2..], 16).ok().map(|n| n as f64);
+        return u64::from_str_radix(&trimmed[2..], 16)
+            .ok()
+            .map(|n| n as f64);
     }
     // Binary: 0b or 0B
     if trimmed.starts_with("0b") || trimmed.starts_with("0B") {
@@ -336,7 +333,7 @@ fn js_parse_number(s: &str) -> Option<f64> {
 /// - Number vs Number: numeric comparison
 /// - String vs String: lexicographic comparison
 /// - Mixed: JS coerces both to Number via ToNumber()
-/// Returns a value where < 0 means val < lit, 0 means equal, > 0 means val > lit.
+///   Returns a value where < 0 means val < lit, 0 means equal, > 0 means val > lit.
 fn compare_js(val: &Value, lit: &AttrLiteral) -> Option<f64> {
     match lit {
         AttrLiteral::Number(n) => {
@@ -406,9 +403,7 @@ fn in_path(node: &Value, ancestor: &Value, path: &[&str], from_index: usize) -> 
             None => return false,
         };
         if let Some(arr) = field.as_array() {
-            return arr
-                .iter()
-                .any(|elem| in_path(node, elem, path, i + 1));
+            return arr.iter().any(|elem| in_path(node, elem, path, i + 1));
         }
         current = field;
     }
@@ -453,10 +448,7 @@ fn is_expression(node_type: &str, ancestry: &[&Value]) -> bool {
         || node_type.ends_with("Literal")
         || (node_type == "Identifier"
             && (ancestry.is_empty()
-                || ancestry[0]
-                    .get("type")
-                    .and_then(|t| t.as_str())
-                    .map_or(true, |t| t != "MetaProperty")))
+                || (ancestry[0].get("type").and_then(|t| t.as_str()) != Some("MetaProperty"))))
         || node_type == "MetaProperty"
 }
 
@@ -491,8 +483,8 @@ fn sibling_match(node: &Value, matcher: &Selector, ancestry: &[&Value], side: Si
             Side::Right => (start_index + 1, arr.len()),
         };
 
-        for k in lower..upper {
-            if is_node(&arr[k]) && matches_node(&arr[k], matcher, ancestry) {
+        for item in &arr[lower..upper] {
+            if is_node(item) && matches_node(item, matcher, ancestry) {
                 return true;
             }
         }
@@ -518,17 +510,19 @@ fn adjacent_match(node: &Value, matcher: &Selector, ancestry: &[&Value], side: S
 
         match side {
             Side::Left => {
-                if idx > 0 && is_node(&arr[idx - 1]) {
-                    if matches_node(&arr[idx - 1], matcher, ancestry) {
-                        return true;
-                    }
+                if idx > 0
+                    && is_node(&arr[idx - 1])
+                    && matches_node(&arr[idx - 1], matcher, ancestry)
+                {
+                    return true;
                 }
             }
             Side::Right => {
-                if idx + 1 < arr.len() && is_node(&arr[idx + 1]) {
-                    if matches_node(&arr[idx + 1], matcher, ancestry) {
-                        return true;
-                    }
+                if idx + 1 < arr.len()
+                    && is_node(&arr[idx + 1])
+                    && matches_node(&arr[idx + 1], matcher, ancestry)
+                {
+                    return true;
                 }
             }
         }

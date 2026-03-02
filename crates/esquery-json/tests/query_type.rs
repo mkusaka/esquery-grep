@@ -11,25 +11,31 @@ fn type_conditional() {
     assert_includes(&matches, &[&ast]);
 
     let matches = query(&ast, "IfStatement");
-    assert_includes(&matches, &[
-        nav(&ast, "body.0"),
-        nav(&ast, "body.1"),
-        nav(&ast, "body.1.alternate"),
-    ]);
+    assert_includes(
+        &matches,
+        &[
+            nav(&ast, "body.0"),
+            nav(&ast, "body.1"),
+            nav(&ast, "body.1.alternate"),
+        ],
+    );
 
     let matches = query(&ast, "LogicalExpression");
-    assert_includes(&matches, &[
-        nav(&ast, "body.1.test"),
-        nav(&ast, "body.1.test.left"),
-    ]);
+    assert_includes(
+        &matches,
+        &[nav(&ast, "body.1.test"), nav(&ast, "body.1.test.left")],
+    );
 
     let matches = query(&ast, "ExpressionStatement");
-    assert_includes(&matches, &[
-        nav(&ast, "body.0.consequent.body.0"),
-        nav(&ast, "body.0.alternate.body.0"),
-        nav(&ast, "body.1.consequent.body.0"),
-        nav(&ast, "body.1.alternate.consequent.body.0"),
-    ]);
+    assert_includes(
+        &matches,
+        &[
+            nav(&ast, "body.0.consequent.body.0"),
+            nav(&ast, "body.0.alternate.body.0"),
+            nav(&ast, "body.1.consequent.body.0"),
+            nav(&ast, "body.1.alternate.consequent.body.0"),
+        ],
+    );
 }
 
 #[test]
@@ -71,26 +77,29 @@ fn type_simple_program() {
     assert_includes(&matches, &[&ast]);
 
     let matches = query(&ast, "VariableDeclaration");
-    assert_includes(&matches, &[
-        nav(&ast, "body.0"),
-        nav(&ast, "body.1"),
-    ]);
+    assert_includes(&matches, &[nav(&ast, "body.0"), nav(&ast, "body.1")]);
 
     let matches = query(&ast, "AssignmentExpression");
-    assert_includes(&matches, &[
-        nav(&ast, "body.2.expression"),
-        nav(&ast, "body.3.consequent.body.0.expression"),
-    ]);
+    assert_includes(
+        &matches,
+        &[
+            nav(&ast, "body.2.expression"),
+            nav(&ast, "body.3.consequent.body.0.expression"),
+        ],
+    );
 
     let matches = query(&ast, "Identifier");
-    assert_includes(&matches, &[
-        nav(&ast, "body.0.declarations.0.id"),
-        nav(&ast, "body.1.declarations.0.id"),
-        nav(&ast, "body.2.expression.left"),
-        nav(&ast, "body.2.expression.right.left"),
-        nav(&ast, "body.3.test"),
-        nav(&ast, "body.3.consequent.body.0.expression.left"),
-    ]);
+    assert_includes(
+        &matches,
+        &[
+            nav(&ast, "body.0.declarations.0.id"),
+            nav(&ast, "body.1.declarations.0.id"),
+            nav(&ast, "body.2.expression.left"),
+            nav(&ast, "body.2.expression.right.left"),
+            nav(&ast, "body.3.test"),
+            nav(&ast, "body.3.consequent.body.0.expression.left"),
+        ],
+    );
 }
 
 #[test]

@@ -5,7 +5,6 @@
 ///   - "falsey selector" — Selector is a typed enum, can't be null
 ///   - "falsey ancestry" — ancestry is &[&Value], can't be null
 ///   - "custom visitor keys" / "nodeTypeKey" / "fallback" — not supported
-
 mod common;
 
 use common::*;

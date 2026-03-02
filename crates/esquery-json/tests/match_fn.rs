@@ -4,7 +4,6 @@
 /// In JS, match.js tests that esquery.match() throws on invalid selector AST objects.
 /// In Rust, Selector is a typed enum so invalid variants can't be constructed.
 /// Instead, we verify that invalid selector *strings* produce empty results (no panic).
-
 mod common;
 
 use common::*;

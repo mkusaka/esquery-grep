@@ -2,14 +2,14 @@
 name = "esquery-napi"
 version = "0.1.0"
 edition = "2021"
-description = "Node.js NAPI bindings for esquery-oxc"
+description = "Node.js NAPI bindings for esquery-rs"
 license = "MIT"
 
 [lib]
 crate-type = ["cdylib"]
 
 [dependencies]
-esquery-oxc = { path = "../esquery-oxc" }
+esquery-rs = { path = "../esquery-rs" }
 napi = "3"
 napi-derive = "3"
 

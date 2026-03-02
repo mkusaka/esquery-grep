@@ -1,8 +1,8 @@
 [package]
-name = "esquery-oxc"
+name = "esquery-rs"
 version = "0.1.0"
 edition = "2021"
-description = "ESQuery matching for oxc-parsed JavaScript/TypeScript ASTs"
+description = "ESQuery matching for JavaScript/TypeScript ASTs"
 license = "MIT"
 
 [dependencies]

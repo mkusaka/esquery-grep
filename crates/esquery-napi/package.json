@@ -1,10 +1,10 @@
 {
-  "name": "esquery-oxc",
+  "name": "esquery-rs",
   "version": "0.1.0",
   "main": "index.js",
   "types": "index.d.ts",
   "napi": {
-    "binaryName": "esquery-oxc",
+    "binaryName": "esquery-rs",
     "targets": []
   },
   "scripts": {

@@ -142,14 +142,14 @@ dependencies = [
 name = "esquery-napi"
 version = "0.1.0"
 dependencies = [
- "esquery-oxc",
+ "esquery-rs",
  "napi",
  "napi-build 1.2.1",
  "napi-derive",
 ]
 
 [[package]]
-name = "esquery-oxc"
+name = "esquery-rs"
 version = "0.1.0"
 dependencies = [
  "esquery-json",

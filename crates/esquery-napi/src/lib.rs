@@ -16,11 +16,11 @@ pub struct NapiMatchResult {
 
 /// Convert a UTF-8 byte offset to a UTF-16 code unit offset.
 ///
-/// JavaScript strings use UTF-16 internally, while oxc produces UTF-8 byte
+/// JavaScript strings use UTF-16 internally, while the parser produces UTF-8 byte
 /// offsets. This conversion is needed so JS consumers get correct offsets.
 fn utf8_byte_to_utf16_offset(source: &str, byte_offset: u32) -> u32 {
     let byte_offset = (byte_offset as usize).min(source.len());
-    // oxc parser guarantees byte offsets at UTF-8 char boundaries.
+    // The parser guarantees byte offsets at UTF-8 char boundaries.
     // floor_char_boundary rounds down as a safety net if that invariant breaks.
     let byte_offset = source.floor_char_boundary(byte_offset);
     source[..byte_offset].encode_utf16().count() as u32
@@ -43,13 +43,13 @@ pub fn query(
     #[napi(ts_arg_type = "'js' | 'jsx' | 'ts' | 'tsx'")] source_type: Option<String>,
 ) -> Vec<NapiMatchResult> {
     let st = match source_type.as_deref() {
-        Some("jsx") => esquery_oxc::JsSourceType::Jsx,
-        Some("ts") => esquery_oxc::JsSourceType::Ts,
-        Some("tsx") => esquery_oxc::JsSourceType::Tsx,
-        _ => esquery_oxc::JsSourceType::Js,
+        Some("jsx") => esquery_rs::JsSourceType::Jsx,
+        Some("ts") => esquery_rs::JsSourceType::Ts,
+        Some("tsx") => esquery_rs::JsSourceType::Tsx,
+        _ => esquery_rs::JsSourceType::Js,
     };
 
-    esquery_oxc::query(&source, &selector, st)
+    esquery_rs::query(&source, &selector, st)
         .into_iter()
         .map(|r| NapiMatchResult {
             r#type: r.node_type,

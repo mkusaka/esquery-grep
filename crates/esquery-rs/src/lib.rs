@@ -18,7 +18,7 @@ pub struct MatchResult {
 
 /// Source type for parsing.
 ///
-/// Determines how oxc_parser treats the input and which ESTree serialization
+/// Determines how the parser treats the input and which ESTree serialization
 /// format is used (JS vs TS).
 #[derive(Debug, Clone, Copy, Default)]
 pub enum JsSourceType {
@@ -46,8 +46,8 @@ impl JsSourceType {
 
 /// Query JavaScript/TypeScript source code with an ESQuery selector.
 ///
-/// Parses the source with oxc_parser, serializes to ESTree JSON, then matches
-/// using esquery-json. Returns match results with source locations.
+/// Parses the source, serializes to ESTree JSON, then matches using
+/// esquery-json. Returns match results with source locations.
 ///
 /// Returns an empty `Vec` when:
 /// - The source contains syntax errors (partial ASTs are not queried).

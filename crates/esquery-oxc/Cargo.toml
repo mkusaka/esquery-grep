@@ -1,0 +1,17 @@
+[package]
+name = "esquery-oxc"
+version = "0.1.0"
+edition = "2021"
+description = "ESQuery matching for oxc-parsed JavaScript/TypeScript ASTs"
+license = "MIT"
+
+[dependencies]
+esquery-selector = { path = "../esquery-selector" }
+esquery-json = { path = "../esquery-json" }
+oxc_parser = "0.116"
+oxc_ast = { version = "0.116", features = ["serialize"] }
+oxc_allocator = "0.116"
+oxc_span = { version = "0.116", features = ["serialize"] }
+serde_json = "1"
+
+[dev-dependencies]

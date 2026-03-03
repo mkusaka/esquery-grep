@@ -10,7 +10,7 @@ mod common;
 use common::*;
 use esquery_json::matches;
 use esquery_selector::parse;
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 
 // -- falsey node --
 

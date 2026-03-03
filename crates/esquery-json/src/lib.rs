@@ -36,10 +36,10 @@ pub fn query_selector<'a>(ast: &'a Value, selector: &Selector) -> Vec<&'a Value>
 fn validate_regexes(selector: &Selector) -> bool {
     match &selector.kind {
         SelectorKind::Attribute(attr) => {
-            if let Some(AttrValue::Regex(re)) = &attr.value {
-                if matcher::build_regex(re).is_none() {
-                    return false;
-                }
+            if let Some(AttrValue::Regex(re)) = &attr.value
+                && matcher::build_regex(re).is_none()
+            {
+                return false;
             }
             true
         }

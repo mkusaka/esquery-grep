@@ -144,7 +144,7 @@ version = "0.1.0"
 dependencies = [
  "esquery-rs",
  "napi",
- "napi-build 1.2.1",
+ "napi-build",
  "napi-derive",
 ]
 
@@ -313,17 +313,11 @@ dependencies = [
  "bitflags",
  "ctor",
  "futures",
- "napi-build 2.3.1",
+ "napi-build",
  "napi-sys",
  "nohash-hasher",
  "rustc-hash",
 ]
-
-[[package]]
-name = "napi-build"
-version = "1.2.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ebd4419172727423cf30351406c54f6cc1b354a2cfb4f1dba3e6cd07f6d5522b"
 
 [[package]]
 name = "napi-build"

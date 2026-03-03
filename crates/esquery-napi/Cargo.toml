@@ -14,4 +14,4 @@ napi = "3.8.3"
 napi-derive = "3.5.2"
 
 [build-dependencies]
-napi-build = "1.2.1"
+napi-build = "2.3.1"

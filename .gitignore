@@ -1,12 +1,6 @@
 # Rust
 target/
 
-# NAPI generated files
-*.node
-crates/esquery-napi/index.js
-crates/esquery-napi/index.d.ts
-crates/esquery-napi/package-lock.json
-
 # Dependencies
 node_modules/
 

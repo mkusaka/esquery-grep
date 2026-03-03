@@ -2,7 +2,7 @@
 
 A Rust implementation of [ESQuery](https://github.com/estools/esquery) — CSS-like selector syntax for querying JavaScript and TypeScript ASTs.
 
-Parses source code with [oxc](https://github.com/oxc-project/oxc), serializes to ESTree JSON, and matches against ESQuery selectors. Available as a CLI tool, a Rust library, and a Node.js native module (via NAPI).
+Parses source code with [oxc](https://github.com/oxc-project/oxc), serializes to ESTree JSON, and matches against ESQuery selectors. Available as a CLI tool and a Rust library.
 
 ## CLI
 
@@ -40,7 +40,6 @@ Exit code is `0` when matches are found, `1` otherwise.
 | `esquery-selector` | ESQuery selector parser (winnow) |
 | `esquery-json` | Matcher for `serde_json::Value` ESTree ASTs |
 | `esquery-rs` | High-level API: source code → parse → query |
-| `esquery-napi` | Node.js bindings via napi-rs |
 
 ## Usage
 
@@ -56,32 +55,6 @@ for m in &results {
 // => BinaryExpression: 1 + 2 (8..13)
 ```
 
-### Node.js
-
-```js
-const { query } = require('esquery-rs');
-
-const results = query('var x = 1 + 2;', 'BinaryExpression');
-console.log(results);
-// => [{ type: 'BinaryExpression', start: 8, end: 13, text: '1 + 2' }]
-```
-
-TypeScript types are auto-generated:
-
-```ts
-interface NapiMatchResult {
-  type: string;
-  start: number; // UTF-16 offset
-  end: number;   // UTF-16 offset
-  text: string;
-}
-
-function query(
-  source: string,
-  selector: string,
-  sourceType?: 'js' | 'jsx' | 'ts' | 'tsx',
-): NapiMatchResult[];
-```
 
 ## Supported Selectors
 
@@ -116,18 +89,9 @@ cargo build --workspace
 cargo test --workspace
 ```
 
-### Node.js (NAPI)
-
-```sh
-cd crates/esquery-napi
-npm install
-npm run build
-```
-
 ## Known Limitations
 
 - TypeScript-specific fields (e.g., `typeAnnotation`) are not traversed because the matcher uses estraverse visitor keys, which only cover standard ESTree node types. TS-specific top-level declarations (e.g., `TSInterfaceDeclaration`) are still found.
-- The NAPI module converts UTF-8 byte offsets to UTF-16 code unit offsets for JavaScript compatibility. Rust API returns UTF-8 byte offsets.
 
 ## License
 

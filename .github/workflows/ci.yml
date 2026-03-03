@@ -36,6 +36,9 @@ jobs:
 
   test-wasm:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: ["20", "22", "24"]
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: dtolnay/rust-toolchain@stable
@@ -48,7 +51,7 @@ jobs:
         run: cp target/wasm32-wasip1/release/eg.wasm npm/eg.wasm
       - uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
         with:
-          node-version: "24.14.0"
+          node-version: ${{ matrix.node-version }}
       - name: Test Node.js
         run: |
           node npm/bin/eg.mjs 'crates/esquery-grep/tests/fixtures/app.js' 'Identifier' | grep 'greet'

@@ -9,4 +9,22 @@
   commitBodyTable: true,
   dependencyDashboard: true,
   automerge: true,
+  packageRules: [
+    {
+      matchManagers: ["npm"],
+      matchFileNames: ["npm/package.json"],
+      matchDepTypes: ["engines"],
+      enabled: false,
+    },
+    {
+      matchManagers: ["github-actions"],
+      matchPackageNames: ["actions/setup-node"],
+      dependencyDashboardApproval: true,
+    },
+    {
+      matchManagers: ["github-actions"],
+      matchPackageNames: ["oven-sh/setup-bun"],
+      dependencyDashboardApproval: true,
+    },
+  ],
 }

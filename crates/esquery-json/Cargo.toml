@@ -7,5 +7,5 @@ license = "MIT"
 
 [dependencies]
 esquery-selector = { path = "../esquery-selector" }
-serde_json = "1"
-fancy-regex = "0.14"
+serde_json = "1.0.149"
+fancy-regex = "0.17.0"

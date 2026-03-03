@@ -12,6 +12,6 @@
     "build:debug": "napi build --manifest-path ./Cargo.toml --platform"
   },
   "devDependencies": {
-    "@napi-rs/cli": "^3"
+    "@napi-rs/cli": "^3.5.1"
   }
 }

@@ -7,6 +7,9 @@ crates/esquery-napi/index.js
 crates/esquery-napi/index.d.ts
 crates/esquery-napi/package-lock.json
 
+# WASM build artifact
+npm/eg.wasm
+
 # Dependencies
 node_modules/
 

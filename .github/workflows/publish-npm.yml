@@ -1,0 +1,49 @@
+name: Publish npm
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-wasip1
+
+      - uses: Swatinem/rust-cache@779680da715d629ac1d338a641029a2f4372abb5 # v2.8.2
+
+      - name: Build WASM
+        run: cargo build --target wasm32-wasip1 -p esquery-grep --release
+
+      - name: Copy WASM to npm package
+        run: cp target/wasm32-wasip1/release/eg.wasm npm/eg.wasm
+
+      - uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
+        with:
+          node-version: "22"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Install npm with trusted publishing support
+        run: npm install -g npm@^11.5.1
+
+      - name: Set version from tag
+        working-directory: npm
+        run: npm version --no-git-tag-version "${GITHUB_REF_NAME#v}"
+
+      - name: Smoke test
+        run: node npm/bin/eg.mjs 'crates/esquery-grep/tests/fixtures/app.js' 'Identifier'
+
+      - name: Publish
+        working-directory: npm
+        run: npm publish --provenance --access public

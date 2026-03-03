@@ -8,7 +8,7 @@ Parses source code with [oxc](https://github.com/oxc-project/oxc), serializes to
 
 ```sh
 # Install
-cargo install --path crates/esquery-cli
+cargo install --path crates/esquery-grep
 
 # Find all identifiers in TypeScript files
 eg 'src/**/*.ts' 'Identifier'
@@ -36,7 +36,7 @@ Exit code is `0` when matches are found, `1` otherwise.
 
 | Crate | Description |
 |-------|-------------|
-| `esquery-cli` | CLI tool (`eg` binary) |
+| `esquery-grep` | CLI tool (`eg` binary) |
 | `esquery-selector` | ESQuery selector parser (winnow) |
 | `esquery-json` | Matcher for `serde_json::Value` ESTree ASTs |
 | `esquery-rs` | High-level API: source code → parse → query |

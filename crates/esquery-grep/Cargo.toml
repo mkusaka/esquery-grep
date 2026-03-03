@@ -1,5 +1,5 @@
 [package]
-name = "esquery-cli"
+name = "esquery-grep"
 version = "0.1.0"
 edition = "2021"
 description = "grep JS/TS files with ESQuery selectors"

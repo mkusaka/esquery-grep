@@ -2,12 +2,41 @@
 
 A Rust implementation of [ESQuery](https://github.com/estools/esquery) — CSS-like selector syntax for querying JavaScript and TypeScript ASTs.
 
-Parses source code with [oxc](https://github.com/oxc-project/oxc), serializes to ESTree JSON, and matches against ESQuery selectors. Available as both a Rust library and a Node.js native module (via NAPI).
+Parses source code with [oxc](https://github.com/oxc-project/oxc), serializes to ESTree JSON, and matches against ESQuery selectors. Available as a CLI tool, a Rust library, and a Node.js native module (via NAPI).
+
+## CLI
+
+```sh
+# Install
+cargo install --path crates/esquery-cli
+
+# Find all identifiers in TypeScript files
+eg 'src/**/*.ts' 'Identifier'
+
+# Find binary expressions with + operator
+eg 'src/**/*.js' 'BinaryExpression[operator="+"]'
+
+# Find functions containing return statements
+eg 'lib/**/*.tsx' 'FunctionDeclaration:has(ReturnStatement)'
+
+# Force source type instead of inferring from extension
+eg 'scripts/*' 'Identifier' --type ts
+```
+
+Output is grep-compatible (`path:line:col: text`):
+
+```
+src/index.ts:3:7: foo
+src/index.ts:5:10: bar
+```
+
+Exit code is `0` when matches are found, `1` otherwise.
 
 ## Crate Structure
 
 | Crate | Description |
 |-------|-------------|
+| `esquery-cli` | CLI tool (`eg` binary) |
 | `esquery-selector` | ESQuery selector parser (winnow) |
 | `esquery-json` | Matcher for `serde_json::Value` ESTree ASTs |
 | `esquery-rs` | High-level API: source code → parse → query |

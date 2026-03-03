@@ -1,0 +1,15 @@
+[package]
+name = "esquery-cli"
+version = "0.1.0"
+edition = "2021"
+description = "grep JS/TS files with ESQuery selectors"
+license = "MIT"
+
+[[bin]]
+name = "eg"
+path = "src/main.rs"
+
+[dependencies]
+esquery-rs = { path = "../esquery-rs" }
+clap = { version = "4", features = ["derive"] }
+glob = "0.3"

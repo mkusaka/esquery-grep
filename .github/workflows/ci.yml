@@ -33,3 +33,26 @@ jobs:
         with:
           components: rustfmt
       - run: cargo fmt --all -- --check
+
+  test-wasm:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-wasip1
+      - uses: Swatinem/rust-cache@779680da715d629ac1d338a641029a2f4372abb5 # v2.8.2
+      - name: Build WASM
+        run: cargo build --target wasm32-wasip1 -p esquery-grep --release
+      - name: Copy WASM
+        run: cp target/wasm32-wasip1/release/eg.wasm npm/eg.wasm
+      - uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
+        with:
+          node-version: "24.14.0"
+      - name: Test Node.js
+        run: |
+          node npm/bin/eg.mjs 'crates/esquery-grep/tests/fixtures/app.js' 'Identifier' | grep 'greet'
+          node npm/bin/eg.mjs 'crates/esquery-grep/tests/fixtures/app.js' 'WhileStatement' && exit 1 || true
+      - uses: oven-sh/setup-bun@3d267786b128fe76c2f16a390aa2448b815359f3 # v2.1.2
+      - name: Test Bun
+        run: bun npm/bin/eg.mjs 'crates/esquery-grep/tests/fixtures/app.js' 'Identifier' | grep 'greet'

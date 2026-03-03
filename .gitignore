@@ -1,6 +1,9 @@
 # Rust
 target/
 
+# WASM build artifact
+npm/eg.wasm
+
 # Dependencies
 node_modules/
 

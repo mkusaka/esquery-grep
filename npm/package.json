@@ -1,0 +1,21 @@
+{
+  "name": "esquery-grep",
+  "version": "0.0.0",
+  "description": "grep JS/TS files with ESQuery selectors",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mkusaka/esquery-grep.git"
+  },
+  "bin": {
+    "esquery-grep": "./bin/eg.mjs",
+    "eg": "./bin/eg.mjs"
+  },
+  "files": [
+    "bin/",
+    "eg.wasm"
+  ],
+  "engines": {
+    "node": ">=24.14.0"
+  }
+}

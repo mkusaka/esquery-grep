@@ -26,8 +26,10 @@ jobs:
       - name: Build WASM
         run: cargo build --target wasm32-wasip1 -p esquery-grep --release
 
-      - name: Copy WASM to npm package
-        run: cp target/wasm32-wasip1/release/eg.wasm npm/eg.wasm
+      - name: Copy WASM and README to npm package
+        run: |
+          cp target/wasm32-wasip1/release/eg.wasm npm/eg.wasm
+          cp README.md npm/README.md
 
       - uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
         with:

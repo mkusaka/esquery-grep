@@ -7,7 +7,10 @@ Parses source code with [oxc](https://github.com/oxc-project/oxc), serializes to
 ## CLI
 
 ```sh
-# Install
+# Install via npm
+npm install -g esquery-grep
+
+# Or via Cargo
 cargo install --path crates/esquery-grep
 
 # Find all identifiers in TypeScript files

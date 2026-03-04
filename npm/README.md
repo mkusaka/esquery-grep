@@ -1,18 +1,24 @@
 # esquery-grep
 
-A Rust implementation of [ESQuery](https://github.com/estools/esquery) — CSS-like selector syntax for querying JavaScript and TypeScript ASTs.
+Grep JavaScript and TypeScript files using [ESQuery](https://github.com/estools/esquery) selectors.
 
-Parses source code with [oxc](https://github.com/oxc-project/oxc), serializes to ESTree JSON, and matches against ESQuery selectors. Available as a CLI tool and a Rust library.
+Powered by [oxc](https://github.com/oxc-project/oxc) parser. Distributed as a WASM binary — no native dependencies required.
 
-## CLI
+## Install
 
 ```sh
-# Install via npm
 npm install -g esquery-grep
+```
 
-# Or via Cargo
-cargo install --path crates/esquery-grep
+Or run directly:
 
+```sh
+npx esquery-grep 'src/**/*.ts' 'Identifier'
+```
+
+## Usage
+
+```sh
 # Find all identifiers in TypeScript files
 eg 'src/**/*.ts' 'Identifier'
 
@@ -34,31 +40,6 @@ src/index.ts:5:10: bar
 ```
 
 Exit code is `0` when matches are found, `1` otherwise.
-
-## Package Structure
-
-| Package | Description |
-|---------|-------------|
-| [`npm`](npm/README.md) | npm package (WASM distribution) |
-| `crates/esquery-grep` | CLI tool (`eg` binary) |
-| `crates/esquery-selector` | ESQuery selector parser (winnow) |
-| `crates/esquery-json` | Matcher for `serde_json::Value` ESTree ASTs |
-| `crates/esquery-rs` | High-level API: source code → parse → query |
-
-## Usage
-
-### Rust
-
-```rust
-use esquery_rs::{query, JsSourceType};
-
-let results = query("var x = 1 + 2;", "BinaryExpression", JsSourceType::Js);
-for m in &results {
-    println!("{}: {} ({}..{})", m.node_type, m.text, m.start, m.end);
-}
-// => BinaryExpression: 1 + 2 (8..13)
-```
-
 
 ## Supported Selectors
 
@@ -84,18 +65,9 @@ for m in &results {
 | Compound | `Identifier[name="x"]` | Multiple conditions |
 | Subject (`!`) | `!Function > Return` | Mark subject of match |
 
-## Building
+## Requirements
 
-### Rust
-
-```sh
-cargo build --workspace
-cargo test --workspace
-```
-
-## Known Limitations
-
-- TypeScript-specific fields (e.g., `typeAnnotation`) are not traversed because the matcher uses estraverse visitor keys, which only cover standard ESTree node types. TS-specific top-level declarations (e.g., `TSInterfaceDeclaration`) are still found.
+- Node.js >= 20.0.0 or Bun
 
 ## License
 

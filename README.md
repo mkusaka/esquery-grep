@@ -35,14 +35,15 @@ src/index.ts:5:10: bar
 
 Exit code is `0` when matches are found, `1` otherwise.
 
-## Crate Structure
+## Package Structure
 
-| Crate | Description |
-|-------|-------------|
-| `esquery-grep` | CLI tool (`eg` binary) |
-| `esquery-selector` | ESQuery selector parser (winnow) |
-| `esquery-json` | Matcher for `serde_json::Value` ESTree ASTs |
-| `esquery-rs` | High-level API: source code → parse → query |
+| Package | Description |
+|---------|-------------|
+| [`npm`](npm/README.md) | npm package (WASM distribution) |
+| `crates/esquery-grep` | CLI tool (`eg` binary) |
+| `crates/esquery-selector` | ESQuery selector parser (winnow) |
+| `crates/esquery-json` | Matcher for `serde_json::Value` ESTree ASTs |
+| `crates/esquery-rs` | High-level API: source code → parse → query |
 
 ## Usage
 

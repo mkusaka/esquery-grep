@@ -63,13 +63,17 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: Test Node.js
         run: |
+          expected_version="$(sed -n 's/^version = "\(.*\)"/\1/p' crates/esquery-grep/Cargo.toml | head -n 1)"
           node npm/bin/eg.mjs --help | grep 'Usage: eg'
+          node npm/bin/eg.mjs --version | grep "^eg ${expected_version}$"
           node npm/bin/eg.mjs --type ts 'crates/esquery-grep/tests/fixtures/utils.ts' 'Identifier' | grep 'utils.ts'
           node npm/bin/eg.mjs 'crates/esquery-grep/tests/fixtures/app.js' 'Identifier' | grep 'greet'
           node npm/bin/eg.mjs 'crates/esquery-grep/tests/fixtures/app.js' 'WhileStatement' && exit 1 || true
       - uses: oven-sh/setup-bun@3d267786b128fe76c2f16a390aa2448b815359f3 # v2.1.2
       - name: Test Bun
         run: |
+          expected_version="$(sed -n 's/^version = "\(.*\)"/\1/p' crates/esquery-grep/Cargo.toml | head -n 1)"
           bun npm/bin/eg.mjs --help | grep 'Usage: eg'
+          bun npm/bin/eg.mjs --version | grep "^eg ${expected_version}$"
           bun npm/bin/eg.mjs --type ts 'crates/esquery-grep/tests/fixtures/utils.ts' 'Identifier' | grep 'utils.ts'
           bun npm/bin/eg.mjs 'crates/esquery-grep/tests/fixtures/app.js' 'Identifier' | grep 'greet'

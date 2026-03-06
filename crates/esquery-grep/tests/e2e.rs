@@ -123,6 +123,14 @@ fn multiline_match_shows_first_line() {
 }
 
 #[test]
+fn version_flag() {
+    eg().arg("--version")
+        .assert()
+        .success()
+        .stdout(predicate::str::contains(env!("CARGO_PKG_VERSION")));
+}
+
+#[test]
 fn skips_unknown_extensions() {
     eg().args([&format!("{}/../Cargo.toml", fixtures()), "*"])
         .assert()

@@ -3,13 +3,14 @@
 import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve, relative, isAbsolute } from "node:path";
+import { parseArgs } from "node:util";
 import { WASI } from "node:wasi";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const wasmPath = resolve(__dirname, "..", "eg.wasm");
 const isBun = typeof Bun !== "undefined";
 
-// Normalize the file pattern argument (argv[2]) for WASI compatibility.
+// Normalize the first positional file pattern argument for WASI compatibility.
 // Other arguments (selector, flags) are passed through as-is.
 // - Bun: preopens {"/":"/"} doubles absolute paths (oven-sh/bun#27724),
 //   so convert to relative from CWD with preopens {".":"."}
@@ -18,12 +19,29 @@ const isBun = typeof Bun !== "undefined";
 const cwd = process.cwd();
 const userArgs = process.argv.slice(2);
 const wasiArgs = [...userArgs];
-if (wasiArgs.length > 0) {
-  const pattern = wasiArgs[0];
+const { tokens } = parseArgs({
+  args: wasiArgs,
+  options: {
+    type: {
+      type: "string",
+      short: "t",
+    },
+  },
+  allowPositionals: true,
+  strict: false,
+  tokens: true,
+});
+const patternArgIndex = tokens.find((token) => token.kind === "positional")?.index ?? -1;
+if (patternArgIndex >= 0) {
+  const pattern = wasiArgs[patternArgIndex];
   if (isBun) {
-    wasiArgs[0] = isAbsolute(pattern) ? relative(cwd, pattern) : pattern;
+    wasiArgs[patternArgIndex] = isAbsolute(pattern)
+      ? relative(cwd, pattern)
+      : pattern;
   } else {
-    wasiArgs[0] = isAbsolute(pattern) ? pattern : resolve(cwd, pattern);
+    wasiArgs[patternArgIndex] = isAbsolute(pattern)
+      ? pattern
+      : resolve(cwd, pattern);
   }
 }
 

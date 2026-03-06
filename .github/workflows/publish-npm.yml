@@ -47,7 +47,10 @@ jobs:
         run: npm version --no-git-tag-version "${GITHUB_REF_NAME#v}"
 
       - name: Smoke test
-        run: node npm/bin/eg.mjs 'crates/esquery-grep/tests/fixtures/app.js' 'Identifier'
+        run: |
+          node npm/bin/eg.mjs --help | grep 'Usage: eg'
+          node npm/bin/eg.mjs --type ts 'crates/esquery-grep/tests/fixtures/utils.ts' 'Identifier' | grep 'utils.ts'
+          node npm/bin/eg.mjs 'crates/esquery-grep/tests/fixtures/app.js' 'Identifier'
 
       - name: Publish
         working-directory: npm

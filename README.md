@@ -97,8 +97,27 @@ cargo test --workspace
 
 `npm/eg.wasm` is built with Binaryen's `wasm-opt`, which must be available on `PATH`.
 
+Local run steps:
+
+1. Install `wasm-opt` from a Binaryen release, or otherwise make it available on `PATH`.
+2. Confirm the command is available with `wasm-opt --version`.
+3. Run the build script from the repository root.
+
+Example using the same Binaryen release as CI:
+
 ```sh
+BINARYEN_VERSION=version_125
+archive="binaryen-${BINARYEN_VERSION}-<platform>.tar.gz"
+curl -fsSLO "https://github.com/WebAssembly/binaryen/releases/download/${BINARYEN_VERSION}/${archive}"
+tar -xzf "${archive}"
+export PATH="$PWD/binaryen-${BINARYEN_VERSION}/bin:$PATH"
 ./scripts/build-wasm.sh
+```
+
+Smoke test after the build:
+
+```sh
+node npm/bin/eg.mjs 'crates/esquery-grep/tests/fixtures/app.js' 'Identifier'
 ```
 
 ## Known Limitations

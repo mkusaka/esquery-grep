@@ -93,6 +93,14 @@ cargo build --workspace
 cargo test --workspace
 ```
 
+### npm WASM artifact
+
+`npm/eg.wasm` is built with Binaryen's `wasm-opt`, which must be available on `PATH`.
+
+```sh
+./scripts/build-wasm.sh
+```
+
 ## Known Limitations
 
 - TypeScript-specific fields (e.g., `typeAnnotation`) are not traversed because the matcher uses estraverse visitor keys, which only cover standard ESTree node types. TS-specific top-level declarations (e.g., `TSInterfaceDeclaration`) are still found.

@@ -96,6 +96,8 @@ cargo test --workspace
 ### npm WASM artifact
 
 `npm/eg.wasm` is built with Binaryen's `wasm-opt`, which must be available on `PATH`.
+The CLI version defaults to the Rust crate version in `crates/esquery-grep/Cargo.toml`.
+Set `EG_VERSION` if you want the built WASM to report a different version.
 
 Local run steps:
 
@@ -114,9 +116,16 @@ export PATH="$PWD/binaryen-${BINARYEN_VERSION}/bin:$PATH"
 ./scripts/build-wasm.sh
 ```
 
+Override the version embedded in the WASM artifact:
+
+```sh
+EG_VERSION=0.1.5 ./scripts/build-wasm.sh
+```
+
 Smoke test after the build:
 
 ```sh
+node npm/bin/eg.mjs --version
 node npm/bin/eg.mjs 'crates/esquery-grep/tests/fixtures/app.js' 'Identifier'
 ```
 

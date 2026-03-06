@@ -5,8 +5,17 @@ use std::process::ExitCode;
 use clap::Parser;
 use esquery_rs::{JsSourceType, MatchResult};
 
+const CLI_VERSION: &str = match option_env!("EG_VERSION") {
+    Some(version) => version,
+    None => env!("CARGO_PKG_VERSION"),
+};
+
 #[derive(Parser)]
-#[command(name = "eg", about = "grep JS/TS files with ESQuery selectors")]
+#[command(
+    name = "eg",
+    about = "grep JS/TS files with ESQuery selectors",
+    version = CLI_VERSION
+)]
 struct Cli {
     /// File glob pattern (e.g., "src/**/*.ts")
     pattern: String,

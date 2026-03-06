@@ -32,7 +32,7 @@ jobs:
           echo "${PWD}/binaryen-${BINARYEN_VERSION}/bin" >> "${GITHUB_PATH}"
 
       - name: Build optimized WASM
-        run: ./scripts/build-wasm.sh
+        run: EG_VERSION="${GITHUB_REF_NAME#v}" ./scripts/build-wasm.sh
 
       - uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
         with:
@@ -49,6 +49,7 @@ jobs:
       - name: Smoke test
         run: |
           node npm/bin/eg.mjs --help | grep 'Usage: eg'
+          node npm/bin/eg.mjs --version | grep "^eg ${GITHUB_REF_NAME#v}$"
           node npm/bin/eg.mjs --type ts 'crates/esquery-grep/tests/fixtures/utils.ts' 'Identifier' | grep 'utils.ts'
           node npm/bin/eg.mjs 'crates/esquery-grep/tests/fixtures/app.js' 'Identifier'
 

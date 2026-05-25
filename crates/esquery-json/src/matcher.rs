@@ -595,11 +595,9 @@ fn has_traverse<'a>(
                     }
                 }
             }
-            Some(val) if is_node(val) => {
-                if has_traverse(val, selectors, ancestry) {
-                    ancestry.remove(0);
-                    return true;
-                }
+            Some(val) if is_node(val) && has_traverse(val, selectors, ancestry) => {
+                ancestry.remove(0);
+                return true;
             }
             _ => {}
         }

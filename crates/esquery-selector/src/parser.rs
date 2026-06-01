@@ -134,19 +134,23 @@ fn sequence(input: &mut &str) -> ModalResult<Selector> {
 ///      / has / firstChild / lastChild / nthChild / nthLastChild / class
 fn atom(input: &mut &str) -> ModalResult<Selector> {
     alt((
-        wildcard,
-        identifier,
-        attr,
-        field,
-        negation,
-        matches_sel,
-        is_sel,
-        has_sel,
-        first_child,
-        last_child,
-        nth_child,
-        nth_last_child,
-        class_sel,
+        alt((
+            wildcard,
+            identifier,
+            attr,
+            field,
+            negation,
+            matches_sel,
+            is_sel,
+        )),
+        alt((
+            has_sel,
+            first_child,
+            last_child,
+            nth_child,
+            nth_last_child,
+            class_sel,
+        )),
     ))
     .parse_next(input)
 }

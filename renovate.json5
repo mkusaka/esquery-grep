@@ -1,8 +1,21 @@
 {
-  minimumReleaseAge: "7days",
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  minimumReleaseAge: "7 days",
   extends: [
     "config:best-practices",
     "group:allNonMajor",
+  ],
+  customManagers: [
+    {
+      customType: "regex",
+      managerFilePatterns: [
+        "/(^|/)(workflow-templates|\\.(?:github|gitea|forgejo)/(?:workflows|actions))/.+\\.ya?ml$/",
+        "/(^|/)action\\.ya?ml$/",
+      ],
+      matchStrings: [
+        "# renovate: datasource=(?<datasource>[a-zA-Z0-9-._]+?) depName=(?<depName>[^\\s]+?)(?: (?:lookupName|packageName)=(?<packageName>[^\\s]+?))?(?: versioning=(?<versioning>[^\\s]+?))?(?: extractVersion=(?<extractVersion>[^\\s]+?))?(?: registryUrl=(?<registryUrl>[^\\s]+?))?\\s+[A-Za-z0-9_]+?_VERSION\\s*:\\s*[\"']?(?<currentValue>.+?)[\"']?\\s",
+      ],
+    },
   ],
   rangeStrategy: "bump",
   prConcurrentLimit: 0,
@@ -18,14 +31,12 @@
       enabled: false,
     },
     {
+      description: "Automerge minor, patch, digest, and pinDigest GitHub Actions updates after a 7 day minimum release age",
       matchManagers: ["github-actions"],
-      matchPackageNames: ["actions/setup-node"],
-      dependencyDashboardApproval: true,
-    },
-    {
-      matchManagers: ["github-actions"],
-      matchPackageNames: ["oven-sh/setup-bun"],
-      dependencyDashboardApproval: true,
+      matchUpdateTypes: ["minor", "patch", "digest", "pinDigest"],
+      automerge: true,
+      automergeType: "pr",
+      minimumReleaseAge: "7 days",
     },
   ],
 }

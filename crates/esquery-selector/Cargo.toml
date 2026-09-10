@@ -6,4 +6,4 @@ description = "ESQuery selector parser for JavaScript/TypeScript AST querying"
 license = "MIT"
 
 [dependencies]
-winnow = "1.0.3"
+winnow = "1.0.4"

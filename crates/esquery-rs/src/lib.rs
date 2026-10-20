@@ -74,16 +74,13 @@ pub fn query(source: &str, selector: &str, source_type: JsSourceType) -> Vec<Mat
         .parse();
 
     // Return empty on parse errors (partial ASTs from error recovery are unreliable)
-    if !ret.errors.is_empty() {
+    if ret.diagnostics.has_errors() {
         return vec![];
     }
 
     // Serialize to ESTree JSON string (with ranges for start/end offsets)
-    let json_str = if matches!(source_type, JsSourceType::Ts | JsSourceType::Tsx) {
-        ret.program.to_estree_ts_json(true)
-    } else {
-        ret.program.to_estree_js_json(true)
-    };
+    let include_ts_fields = matches!(source_type, JsSourceType::Ts | JsSourceType::Tsx);
+    let json_str = ret.program.to_estree_json(include_ts_fields, true);
 
     // Parse JSON string into serde_json::Value
     let json: Value = match serde_json::from_str(&json_str) {

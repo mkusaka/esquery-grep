@@ -8,6 +8,10 @@ on:
   push:
     tags: ["v*"]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: false
+
 permissions: {}
 
 jobs:
@@ -52,6 +56,7 @@ jobs:
         run: npm version --no-git-tag-version "${GITHUB_REF_NAME#v}"
 
       - name: Smoke test
+        shell: bash
         run: |
           node npm/bin/eg.mjs --help | grep 'Usage: eg'
           node npm/bin/eg.mjs --version | grep "^eg ${GITHUB_REF_NAME#v}$"
